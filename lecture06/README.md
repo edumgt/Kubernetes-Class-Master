@@ -1,17 +1,18 @@
 # Lecture 06 - Services with kubectl
 
-## 학습 목표
-- ClusterIP/NodePort Service 구성
-- 프론트-백엔드 연결 및 라우팅 흐름 이해
+> 이 README는 lecture06 강의의 진행 안내 문서입니다.
 
-## 실습 폴더
+## 강의 목표
+- ClusterIP/NodePort Service 구성과 동작 이해
+- 프론트/백엔드 연결 및 트래픽 흐름 확인
+
+## 포함 실습
 - [05-Services-with-kubectl](./05-Services-with-kubectl)
 
-## 연계 이론 문서
-- [6.4 k3s_node_internal_clusterip_summary.md](../topic05_network_ingress/6.4%20k3s_node_internal_clusterip_summary.md)
-- [7.1.1 k3s-traefik-ingress-routing-debug.md](../topic05_network_ingress/7.1.1%20k3s-traefik-ingress-routing-debug.md)
-
 ## 권장 순서
-1. Backend Deployment + ClusterIP 구성
-2. Frontend Deployment + NodePort 구성
-3. 스케일링 후 분산 동작 확인
+1. Backend ClusterIP 구성
+2. Frontend NodePort 구성
+3. 스케일링 후 동작 확인
+
+## 통합 문서 목록
+- (상위 통합 문서 없음, 실습 README 참조)

@@ -1,3 +1,24 @@
+# Lecture 13 - Auto Scaling (HPA)
+
+> 이 README는 lecture13 폴더의 개별 MD를 통합한 강의 노트입니다.
+
+## 강의 목표
+- HPA 오토스케일 동작 메커니즘 이해
+- Fortio 기반 부하 테스트로 스케일 확인
+
+## 포함 문서
+- 6. AutoScaleUp_Test.md
+
+## 권장 순서
+1. Metrics Server 상태 확인
+2. HPA 배포/관찰
+3. Fortio 부하로 scale up/down 검증
+
+## 통합 문서 목록
+- `6. AutoScaleUp_Test.md`
+
+---
+
 # K3s + NGINX HPA 오토스케일 실습 정리 (2 → 4)
 
 > 통합본: `6. AutoScaleUp_Test.md` + `6.5 fortio_k3s_notes.md`
