@@ -12,7 +12,7 @@
   - ClusterIP Service 이름은 `name: my-backend-service`여야 합니다.
   - Frontend Nginx reverse proxy의 `default.conf`에서 같은 이름을 사용합니다.
   - 다른 이름으로 바꿔보며 어떤 문제가 발생하는지 확인해 보세요.
-  - 관련 설명은 [05-Services-with-kubectl](../../../lecture13/practice/05-Services-with-kubectl/README.md)에서도 다룹니다.
+  - 관련 설명은 [05-Services-with-kubectl](../../../topic05_network_ingress/practice/05-Services-with-kubectl/README.md)에서도 다룹니다.
 ```
 cd <Course-Repo>\kubernetes-fundamentals\10-Services-with-YAML\kube-manifests
 kubectl get all
