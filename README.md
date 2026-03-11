@@ -1,6 +1,4 @@
-# Kubernetes-Class-Local
-
-Windows + VirtualBox + Ubuntu + K3s 기반의 로컬 Kubernetes 학습 저장소입니다.
+# Kubernetes-Class-Master
 
 ## 학습 동선
 - 통합 강의 폴더: `lecture01` ~ `lecture15`
