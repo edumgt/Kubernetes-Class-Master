@@ -1,0 +1,62 @@
+#cloud-config
+autoinstall:
+  version: 1
+
+  # ── 로케일 / 키보드 ──────────────────────────────────────────────────────────
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+
+  # ── 네트워크 (DHCP) ──────────────────────────────────────────────────────────
+  network:
+    version: 2
+    ethernets:
+      enp0s3:
+        dhcp4: true
+
+  # ── 스토리지 (전체 디스크 LVM) ───────────────────────────────────────────────
+  storage:
+    layout:
+      name: lvm
+
+  # ── 사용자 계정 ──────────────────────────────────────────────────────────────
+  identity:
+    hostname: k8s-node
+    # ── 보안 안내 ─────────────────────────────────────────────────────────────
+  # 아래 해시는 'ubuntu' 비밀번호를 SHA-512 로 해시한 값입니다.
+  # 이 파일은 강의·데모 전용입니다.
+  # 실제 운영 환경에서는 반드시 고유한 비밀번호 해시를 사용하거나
+  # 비밀번호 인증을 비활성화하고 SSH 공개키 인증만 허용하세요.
+  #   openssl passwd -6 '<새 비밀번호>'
+    password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM6Aqoeeven8ccroUSE1EXBr8lDCNqucXKVC.AE6e9pUBoprMoOIZVcyD0MTP/"
+    username: ubuntu
+
+  # ── SSH ──────────────────────────────────────────────────────────────────────
+  ssh:
+    install-server: true
+    allow-pw: true
+
+  # ── 추가 패키지 ──────────────────────────────────────────────────────────────
+  packages:
+    - curl
+    - wget
+    - git
+    - ca-certificates
+    - gnupg
+    - lsb-release
+    - apt-transport-https
+    - software-properties-common
+    - open-vm-tools
+
+  # ── 설치 후 실행 커맨드 ───────────────────────────────────────────────────────
+  late-commands:
+    # k8s-bootstrap.sh 를 VM 안으로 복사 후 실행
+    - cp /cdrom/k8s-bootstrap.sh /target/tmp/k8s-bootstrap.sh
+    - chmod +x /target/tmp/k8s-bootstrap.sh
+    - curtin in-target --target=/target -- bash /tmp/k8s-bootstrap.sh
+    # ubuntu 사용자에게 sudo 권한 부여 (패스워드 없이)
+    - echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /target/etc/sudoers.d/ubuntu
+    - chmod 440 /target/etc/sudoers.d/ubuntu
+
+  # ── 설치 완료 후 자동 재부팅 ────────────────────────────────────────────────
+  shutdown: reboot
