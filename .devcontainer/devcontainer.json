@@ -4,7 +4,19 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb"
+  },
   "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "forwardPorts": [8443],
+  "portsAttributes": {
+    "8443": {
+      "label": "Kubernetes Dashboard",
+      "protocol": "https",
+      "onAutoForward": "notify"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
