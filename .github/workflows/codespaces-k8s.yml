@@ -10,6 +10,8 @@ on:
       - ".github/workflows/codespaces-k8s.yml"
       - "lecture*/**/*.yml"
       - "lecture*/**/*.yaml"
+      - "virtualbox/**"
+      - "vmware/**"
   pull_request:
     branches:
       - main
@@ -19,6 +21,8 @@ on:
       - ".github/workflows/codespaces-k8s.yml"
       - "lecture*/**/*.yml"
       - "lecture*/**/*.yaml"
+      - "virtualbox/**"
+      - "vmware/**"
   workflow_dispatch:
 
 permissions:
@@ -27,6 +31,8 @@ permissions:
 jobs:
   devcontainer-k8s-smoke:
     runs-on: ubuntu-latest
+    # Codespaces target: 4-core / 16 GB (hostRequirements in devcontainer.json)
+    # CI runs on ubuntu-latest (2-core) which is sufficient for tool-chain smoke tests.
 
     steps:
       - name: Checkout

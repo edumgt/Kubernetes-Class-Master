@@ -101,6 +101,8 @@ ensure_kind_cluster() {
 
   kubectl config use-context "kind-${KIND_CLUSTER_NAME}" >/dev/null
   kubectl wait --for=condition=Ready node --all --timeout=180s
+  # Single-node: allow workloads on the control-plane node
+  kubectl taint nodes --all node-role.kubernetes.io/control-plane- 2>/dev/null || true
   kubectl create namespace lecture --dry-run=client -o yaml | kubectl apply -f -
   log "k8s context ready: kind-${KIND_CLUSTER_NAME}"
 }

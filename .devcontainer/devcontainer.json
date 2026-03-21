@@ -4,6 +4,10 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb"
+  },
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {

@@ -1,5 +1,118 @@
 # Kubernetes-Class-Master
 
+## 실습 환경 선택
+
+이 저장소는 다음 세 가지 환경에서 실습할 수 있도록 구성되어 있습니다.
+
+| 환경 | 폴더 / 방법 | 권장 사양 |
+|------|------------|-----------|
+| **VirtualBox** (로컬 VM) | [`virtualbox/`](./virtualbox/) | RAM 8GB+, 4코어+ |
+| **VMware** (로컬 VM) | [`vmware/`](./vmware/) | RAM 8GB+, 4코어+ |
+| **GitHub Codespaces** (클라우드) | 이 저장소 → Code → Codespaces | 4 CPU / 16GB (자동 구성) |
+
+---
+
+## VirtualBox 다운로드 및 설치
+
+[![VirtualBox](https://img.shields.io/badge/Oracle_VirtualBox-Download-183A61?logo=virtualbox&logoColor=white&style=for-the-badge)](https://www.virtualbox.org/wiki/Downloads)
+
+> **공식 다운로드**: https://www.virtualbox.org/wiki/Downloads
+
+```
+[설치 단계 요약]
+
+① OS 에 맞는 패키지 다운로드 (Windows .exe / macOS .dmg / Linux .deb/.rpm)
+       ↓
+② 설치 마법사 실행 (관리자/sudo 권한 필요)
+       ↓
+③ Extension Pack 설치 (USB 3.0, RDP 지원용)
+   → 같은 페이지의 "VirtualBox Extension Pack" 다운로드 후 설치
+       ↓
+④ 설치 확인: VBoxManage --version
+```
+
+| OS | 직접 다운로드 |
+|----|--------------|
+| Windows 10/11 | https://download.virtualbox.org/virtualbox/7.1.4/VirtualBox-7.1.4-165100-Win.exe |
+| macOS Intel | https://download.virtualbox.org/virtualbox/7.1.4/VirtualBox-7.1.4-165100-OSX.dmg |
+| macOS Apple Silicon | https://download.virtualbox.org/virtualbox/7.1.4/VirtualBox-7.1.4-165100-macOSArm64.dmg |
+| Ubuntu 24.04 | https://download.virtualbox.org/virtualbox/7.1.4/virtualbox-7.1_7.1.4-165100~Ubuntu~noble_amd64.deb |
+
+→ VirtualBox 상세 K8s 설정: **[`virtualbox/README.md`](./virtualbox/README.md)**
+
+---
+
+## VMware 다운로드 및 설치
+
+[![VMware Workstation](https://img.shields.io/badge/VMware_Workstation_Pro-Download-607078?logo=vmware&logoColor=white&style=for-the-badge)](https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware+Workstation+Pro)
+[![VMware Fusion](https://img.shields.io/badge/VMware_Fusion_Pro-macOS-607078?logo=vmware&logoColor=white&style=for-the-badge)](https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware+Fusion)
+
+> **공식 다운로드 (Broadcom 계정 필요)**
+> - Workstation Pro (Windows/Linux): https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware+Workstation+Pro
+> - Fusion Pro (macOS): https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware+Fusion
+
+> **참고**: VMware Workstation Pro / Fusion Pro 는 2024년부터 개인 사용자에게 **무료** 제공됩니다.
+
+```
+[설치 단계 요약]
+
+① Broadcom 계정 생성 또는 로그인 (https://profile.broadcom.com/web/registration)
+       ↓
+② 제품 페이지에서 최신 버전 설치 파일 다운로드
+       ↓
+③ Windows: .exe 실행 → 설치 마법사 진행 (Enhanced Keyboard Driver 포함 권장)
+   macOS:  .dmg 열기 → Applications 이동 → 시스템 보안 승인
+   Linux:  chmod +x *.bundle && sudo ./VMware-Workstation-Full-*.bundle
+       ↓
+④ 첫 실행 시 "Use for free" (개인 무료 라이선스) 선택
+       ↓
+⑤ 설치 확인: vmrun list
+```
+
+→ VMware 상세 K8s 설정: **[`vmware/README.md`](./vmware/README.md)**
+
+---
+
+## GitHub Codespaces 실습 (4 CPU / 16 GB)
+
+이 저장소는 GitHub Codespaces 에서 **4 CPU / 16 GB** 머신으로  
+Kubernetes Control Plane 단일 노드를 자동 구성합니다.
+
+```
+[Codespaces 시작 방법]
+
+① GitHub 저장소 페이지 → "Code" 버튼 클릭
+       ↓
+② "Codespaces" 탭 → "..." 메뉴 → "New with options..."
+       ↓
+③ Machine type: "4-core" (4 CPU / 16 GB RAM) 선택
+       ↓
+④ "Create codespace" 클릭
+       ↓
+⑤ 컨테이너 빌드 완료 후 자동으로 k8s 단일 노드 클러스터 생성
+       ↓
+⑥ 아래 명령어로 클러스터 확인
+```
+
+```bash
+# Codespaces 터미널에서 실행
+kubectl config current-context   # kind-lecture
+kubectl get nodes                 # control-plane Ready
+kubectl get ns lecture            # lecture 네임스페이스
+```
+
+### Codespaces 자동 구성 내용
+
+| 항목 | 값 |
+|------|----|
+| 머신 타입 | 4 CPU / 16 GB RAM |
+| Kubernetes 배포 방식 | kind (Docker-in-Docker) |
+| 클러스터 구성 | Control Plane 단일 노드 |
+| 설치 도구 | kubectl, helm, kind |
+| 기본 네임스페이스 | `lecture` |
+
+---
+
 ## 학습 동선
 - 통합 강의 폴더: `lecture01` ~ `lecture15`
 - 각 강의는 해당 폴더의 `README.md`를 기준으로 진행
@@ -94,9 +207,9 @@ sudo systemctl status k3s-agent
 | Oracle Cloud | OKE | OCIR | Virtual Nodes |
 
 ## GitHub Codespaces 실습
-1. GitHub에서 이 저장소를 Codespaces로 엽니다.
+1. GitHub에서 이 저장소를 Codespaces로 엽니다 (4 CPU / 16 GB 머신 선택).
 2. 컨테이너 생성 후 `postCreateCommand`가 실행되어 `kubectl`, `helm`, `kind`를 설치합니다.
-3. 기본 kind 클러스터(`kind-lecture`)가 없으면 자동 생성됩니다.
+3. kind Control Plane 단일 노드 클러스터(`kind-lecture`)가 없으면 자동 생성됩니다.
 4. 클러스터 확인:
 ```bash
 kubectl config current-context
