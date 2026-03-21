@@ -83,6 +83,65 @@ ensure_tools() {
   install_kind
 }
 
+install_metallb() {
+  local metallb_version="${METALLB_VERSION:-v0.14.9}"
+
+  if kubectl get namespace metallb-system >/dev/null 2>&1; then
+    log "metallb already installed, skipping"
+    return 0
+  fi
+
+  log "installing metallb ${metallb_version}"
+  kubectl apply -f "https://raw.githubusercontent.com/metallb/metallb/${metallb_version}/config/manifests/metallb-native.yaml"
+
+  log "waiting for metallb controller to be ready"
+  kubectl wait --namespace metallb-system \
+    --for=condition=ready pod \
+    --selector=app=metallb \
+    --timeout=120s
+
+  # Derive an IP range from the kind Docker bridge network.
+  # Use the last 50 host addresses of the subnet so the pool is always
+  # within the actual CIDR regardless of prefix length (/16, /24, etc.).
+  local kind_cidr
+  kind_cidr="$(docker network inspect kind --format '{{(index .IPAM.Config 0).Subnet}}')"
+  local pool_range
+  pool_range="$(python3 - "${kind_cidr}" <<'PYEOF'
+import ipaddress, sys
+net = ipaddress.ip_network(sys.argv[1], strict=False)
+hosts = list(net.hosts())
+if len(hosts) < 50:
+    print(f"{hosts[0]}-{hosts[-1]}")
+else:
+    print(f"{hosts[-50]}-{hosts[-1]}")
+PYEOF
+)"
+  local pool_start="${pool_range%%-*}"
+  local pool_end="${pool_range##*-}"
+
+  log "configuring metallb address pool ${pool_start}-${pool_end}"
+  kubectl apply -f - <<EOF
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: kind-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - ${pool_start}-${pool_end}
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: kind-l2
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - kind-pool
+EOF
+  log "metallb ready: pool ${pool_start}-${pool_end}"
+}
+
 ensure_kind_cluster() {
   if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
     log "docker daemon is not available, skip kind cluster bootstrap"
@@ -104,6 +163,7 @@ ensure_kind_cluster() {
   # Single-node: allow workloads on the control-plane node
   kubectl taint nodes --all node-role.kubernetes.io/control-plane- 2>/dev/null || true
   kubectl create namespace lecture --dry-run=client -o yaml | kubectl apply -f -
+  install_metallb
   log "k8s context ready: kind-${KIND_CLUSTER_NAME}"
 }
 
